@@ -1,0 +1,460 @@
+<title>Ask Nghia Vu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --bg-2: #16140f;
+    --bg-3: #201d16;
+    --line: #2b2721;
+    --line-2: #39332a;
+    --text: #f1ede4;
+    --muted: #a49c8c;
+    --faint: #6f685b;
+    --accent: #e7ab5e;
+    --accent-2: #f3c88c;
+    --accent-ink: #1a1408;
+    --accent-dim: rgba(231, 171, 94, 0.12);
+    --accent-line: rgba(231, 171, 94, 0.32);
+    --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+    --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --maxw: 1080px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; border: 3px solid var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 800; margin: 0; line-height: 1.04; letter-spacing: -0.025em; text-wrap: balance; }
+  .mono { font-family: var(--font-mono); }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50; height: 64px;
+    display: flex; align-items: center;
+    border-bottom: 1px solid transparent; transition: background-color .3s, border-color .3s, backdrop-filter .3s;
+  }
+  nav.scrolled { background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(12px); border-bottom-color: var(--line); }
+  nav .wrap { display: flex; align-items: center; gap: 24px; width: 100%; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; letter-spacing: -0.01em; }
+  .brand__mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--accent-dim); border: 1px solid var(--accent-line); color: var(--accent); font-weight: 800; font-size: 0.82rem; letter-spacing: -0.03em; }
+  .nav__links { margin-left: auto; display: flex; gap: 26px; }
+  .nav__links a { font-size: 0.9rem; color: var(--muted); transition: color .18s; }
+  .nav__links a:hover { color: var(--text); }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; }
+  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--accent-line); }
+  .status .dot { animation: pulse 2.6s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-line); } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: 132px 0 84px; overflow: hidden; }
+  #grid-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
+  .hero .wrap { position: relative; z-index: 1; }
+  .hero__role { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 12px; }
+  .hero__role::after { content: ''; height: 1px; width: 64px; background: var(--line-2); }
+  h1.hero__title { font-size: clamp(2.6rem, 6.4vw, 5rem); margin: 22px 0 0; max-width: 16ch; }
+  h1.hero__title .amber { color: var(--accent); }
+  .hero__sub { margin: 22px 0 0; max-width: 54ch; font-size: 1.12rem; color: var(--muted); }
+
+  /* Reveal lines */
+  .rise { opacity: 0; transform: translateY(16px); }
+  .rise.in { opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+
+  /* ---------- Ask ---------- */
+  .ask { margin-top: 40px; max-width: 680px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.4); overflow: hidden; }
+  .ask__head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .ask__head .spark { color: var(--accent); }
+  .ask__head b { font-family: var(--font-display); font-weight: 700; font-size: 0.92rem; }
+  .ask__head span { margin-left: auto; font-family: var(--font-mono); font-size: 0.68rem; color: var(--faint); }
+  .ask__io { display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 16px; }
+  .ask__io .q { color: var(--accent); font-family: var(--font-mono); }
+  .ask__input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--text); font-family: var(--font-body); font-size: 1rem; padding: 10px 0; }
+  .ask__input::placeholder { color: var(--faint); }
+  .ask__input:focus { outline: none; }
+  .ask__send { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 9px; background: var(--accent); color: var(--accent-ink); cursor: pointer; transition: background-color .16s, transform .12s; flex: none; }
+  .ask__send:hover { background: var(--accent-2); }
+  .ask__send:active { transform: translateY(1px); }
+  .ask__answer { border-top: 1px solid var(--line); padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.16,1,.3,1), padding .45s; }
+  .ask__answer.open { max-height: 480px; padding: 16px; }
+  .ask__answer-text { font-size: 1rem; line-height: 1.65; color: var(--text); min-height: 1.4em; }
+  .ask__answer-text .caret { display: inline-block; width: 8px; height: 1.05em; background: var(--accent); vertical-align: -0.15em; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .thinking { display: inline-flex; gap: 5px; align-items: center; }
+  .thinking span { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); animation: tw 1.1s ease-in-out infinite; }
+  .thinking span:nth-child(2){animation-delay:.15s} .thinking span:nth-child(3){animation-delay:.3s}
+  @keyframes tw { 0%,60%,100%{opacity:.3;transform:translateY(0)} 30%{opacity:.9;transform:translateY(-3px)} }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); background: transparent; border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 13px; cursor: pointer; transition: border-color .16s, color .16s, background-color .16s; }
+  .chip:hover { border-color: var(--accent-line); color: var(--accent); background: var(--accent-dim); }
+  .ask__note { margin: 12px 2px 0; font-family: var(--font-mono); font-size: 0.7rem; color: var(--faint); }
+
+  /* ---------- Sections ---------- */
+  section.band { padding: 92px 0; border-top: 1px solid var(--line); }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 44px; }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.4rem); }
+  .sec-head .idx { font-family: var(--font-mono); font-size: 0.8rem; color: var(--faint); }
+
+  /* Work: Nest feature */
+  .nest { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+  .nest__name { font-size: 2rem; display: flex; align-items: center; gap: 12px; }
+  .tag { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-line); border-radius: 5px; padding: 3px 7px; }
+  .nest__rule { margin: 18px 0 0; font-size: 1.15rem; color: var(--text); line-height: 1.5; }
+  .nest__rule b { color: var(--accent); font-weight: 600; }
+  .nest__body { margin: 14px 0 0; color: var(--muted); max-width: 52ch; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .pill { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); background: var(--bg-3); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; }
+  .nest__meta { margin-top: 22px; display: flex; gap: 28px; }
+  .nest__meta div span { display: block; font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--faint); }
+  .nest__meta div b { font-weight: 600; font-size: 0.94rem; }
+
+  .diagram { background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .diagram figcaption { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 18px; }
+  .flow { display: flex; flex-direction: column; gap: 12px; }
+  .node { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 11px; background: var(--bg-3); border: 1px solid var(--line-2); }
+  .node .ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; flex: none; font-family: var(--font-mono); font-weight: 500; }
+  .node--code .ico { background: rgba(231,171,94,.14); color: var(--accent); }
+  .node--llm .ico { background: rgba(241,237,228,.08); color: var(--text); }
+  .node--out .ico { background: rgba(231,171,94,.14); color: var(--accent); }
+  .node b { font-size: 0.94rem; display: block; }
+  .node small { color: var(--muted); font-size: 0.8rem; }
+  .arrow { display: flex; align-items: center; gap: 10px; padding-left: 24px; color: var(--faint); font-family: var(--font-mono); font-size: 0.74rem; }
+  .arrow svg { overflow: visible; }
+  .arrow path.track { stroke: var(--line-2); }
+  .arrow path.pulse { stroke: var(--accent); stroke-dasharray: 8 34; animation: dash 1.8s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -42; } }
+
+  .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .pcard { padding: 22px; border: 1px dashed var(--line-2); border-radius: 12px; background: var(--bg-2); transition: border-color .2s, transform .2s; }
+  .pcard:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .pcard h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+  .pcard p { color: var(--faint); font-size: 0.9rem; margin: 8px 0 0; }
+
+  /* Approach */
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .principle { background: var(--bg); padding: 28px; }
+  .principle .n { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); }
+  .principle h3 { font-family: var(--font-display); font-size: 1.28rem; font-weight: 700; margin: 10px 0 0; }
+  .principle p { color: var(--muted); margin: 10px 0 0; font-size: 0.95rem; }
+  .principle .dec { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--text); }
+  .principle .dec span { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 4px; }
+
+  /* Experience timeline */
+  .timeline { display: flex; flex-direction: column; }
+  .tl { display: grid; grid-template-columns: 170px 1fr; gap: 28px; padding: 22px 0; border-top: 1px solid var(--line); }
+  .tl:first-child { border-top: 0; }
+  .tl__when { font-family: var(--font-mono); font-size: 0.82rem; color: var(--faint); }
+  .tl__kind { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .tl__role { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 6px 0 0; }
+  .tl__desc { color: var(--muted); margin: 8px 0 0; max-width: 60ch; font-size: 0.95rem; }
+  .ph { color: var(--faint); }
+
+  /* Contact */
+  .contact { text-align: left; }
+  .contact h2 { font-size: clamp(2.2rem, 5vw, 3.4rem); max-width: 18ch; }
+  .contact .row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-body); font-weight: 600; font-size: 0.98rem; padding: 13px 22px; border-radius: 10px; cursor: pointer; border: 1px solid var(--line-2); color: var(--text); background: transparent; transition: border-color .18s, background-color .18s, transform .12s; }
+  .btn:hover { border-color: var(--accent-line); transform: translateY(-1px); }
+  .btn--primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn--primary:hover { background: var(--accent-2); }
+  footer { border-top: 1px solid var(--line); padding: 30px 0; color: var(--faint); font-size: 0.84rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 860px) {
+    .nav__links { display: none; }
+    .nest, .principles, .projects { grid-template-columns: 1fr; }
+    .tl { grid-template-columns: 1fr; gap: 6px; }
+    .wrap { padding: 0 22px; }
+  }
+</style>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand__mark">nv</span> Nghia Vu</a>
+    <div class="nav__links">
+      <a href="#work">Work</a>
+      <a href="#approach">Approach</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <span class="status"><span class="dot"></span> Open to roles</span>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="grid-canvas" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="hero__role rise">AI &amp; mobile engineer</p>
+    <h1 class="hero__title rise">I ship <span class="amber">AI</span> that survives production.</h1>
+    <p class="hero__sub rise">A React Native fintech app, production .NET, and published research. I build AI features that hold up when real users arrive — not just in the demo.</p>
+
+    <div class="ask rise" role="region" aria-label="Ask about my work">
+      <div class="ask__head">
+        <span class="spark" aria-hidden="true">✦</span>
+        <b>Ask my work</b>
+        <span>grounded in real projects</span>
+      </div>
+      <form class="ask__io" id="ask-form">
+        <span class="q" aria-hidden="true">&gt;</span>
+        <input class="ask__input" id="ask-input" autocomplete="off" placeholder="Ask me anything — “How does Nest use AI?”" aria-label="Ask a question" />
+        <button class="ask__send" type="submit" aria-label="Send">↵</button>
+      </form>
+      <div class="ask__answer" id="ask-answer"><div class="ask__answer-text" id="ask-text"></div></div>
+    </div>
+    <div class="chips rise" id="chips" aria-label="Suggested questions"></div>
+    <p class="ask__note rise">Mock: answers are canned. The live version calls an LLM over my real content — the same “model narrates, code owns the facts” pattern I use in Nest.</p>
+  </div>
+</header>
+
+<section class="band" id="work">
+  <div class="wrap">
+    <div class="sec-head rise"><h2>Selected work</h2><span class="idx mono">01 — Nest leads</span></div>
+    <div class="nest">
+      <div class="rise">
+        <div class="nest__name">Nest <span class="tag">Fintech · React Native</span></div>
+        <p class="nest__rule"><b>The model never owns a number.</b></p>
+        <p class="nest__body">A mobile fintech app I built and maintain end to end. Every financial figure is computed in deterministic, testable code; the LLM only turns finished numbers into plain-language guidance — never the other way around.</p>
+        <div class="pills">
+          <span class="pill">React Native</span><span class="pill">Expo</span><span class="pill">TypeScript</span><span class="pill">LLM API</span>
+        </div>
+        <div class="nest__meta">
+          <div><span>Role</span><b>Built &amp; maintained end to end</b></div>
+          <div><span>Ships</span><b>~September 2026</b></div>
+        </div>
+      </div>
+      <figure class="diagram rise">
+        <figcaption>How the AI is scoped</figcaption>
+        <div class="flow">
+          <div class="node node--code"><span class="ico">{ }</span><div><b>Deterministic code</b><small>computes every figure, tested</small></div></div>
+          <div class="arrow"><svg width="30" height="20"><path class="track" d="M6 4 V16" fill="none" stroke-width="2"/><path class="pulse" d="M6 4 V16" fill="none" stroke-width="2"/></svg> hands over finished numbers</div>
+          <div class="node node--llm"><span class="ico">AI</span><div><b>LLM · narrator only</b><small>phrases numbers, owns none</small></div></div>
+          <div class="arrow"><svg width="30" height="20"><path class="track" d="M6 4 V16" fill="none" stroke-width="2"/><path class="pulse" d="M6 4 V16" fill="none" stroke-width="2"/></svg> plain-language guidance</div>
+          <div class="node node--out"><span class="ico">◎</span><div><b>The user</b><small>gets advice it can trust</small></div></div>
+        </div>
+      </figure>
+    </div>
+    <div class="projects">
+      <div class="pcard rise"><h3>[[ Project two ]]</h3><p>Title + one line — to add from a real project.</p></div>
+      <div class="pcard rise"><h3>[[ Project three ]]</h3><p>Title + one line — to add from a real project.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="approach">
+  <div class="wrap">
+    <div class="sec-head rise"><h2>How I build</h2><span class="idx mono">02 — principles, tied to real decisions</span></div>
+    <div class="principles">
+      <div class="principle rise"><div class="n">01</div><h3>The model never owns a number.</h3><p>LLMs are great narrators and unreliable accountants, so I don’t let them do the math that matters.</p><div class="dec"><span>the decision</span>In Nest, every figure is computed in code; the model only phrases finished numbers.</div></div>
+      <div class="principle rise"><div class="n">02</div><h3>Production is the real test.</h3><p>Anything works in a demo. What counts is the version that survives real users, real data, and a deploy pipeline.</p><div class="dec"><span>the decision</span>Shipped C#/.NET at an industrial company through Azure DevOps CI/CD against MSSQL.</div></div>
+      <div class="principle rise"><div class="n">03</div><h3>Own it end to end.</h3><p>I’d rather understand the whole path than be handed a slice of it.</p><div class="dec"><span>the decision</span>Built and still maintain Nest from data model to UI to release.</div></div>
+      <div class="principle rise"><div class="n">04</div><h3>Be precise about what AI does.</h3><p>Overclaiming is how AI features lose trust. I scope the model tightly and say exactly what it touches.</p><div class="dec"><span>the decision</span>Nest’s AI is a documented narration layer — no one mistakes phrasing for computation.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="experience">
+  <div class="wrap">
+    <div class="sec-head rise"><h2>Experience</h2><span class="idx mono">03 — roles, education, research</span></div>
+    <div class="timeline">
+      <div class="tl rise"><div class="tl__when">[[ dates ]]</div><div><div class="tl__kind">Role</div><div class="tl__role"><span class="ph">[[ Industrial company ]]</span></div><div class="tl__desc">Production software in C#/.NET, shipped through Azure DevOps pipelines against MSSQL databases. Real systems with real uptime, not coursework.</div></div></div>
+      <div class="tl rise"><div class="tl__when">published</div><div><div class="tl__kind">Research</div><div class="tl__role"><span class="ph">[[ Publication title ]]</span></div><div class="tl__desc">Published research — how I keep my understanding of these systems grounded rather than hype-driven.</div></div></div>
+      <div class="tl rise"><div class="tl__when">Dec 2025 · May 2027</div><div><div class="tl__kind">Education</div><div class="tl__role">B.S. · M.S.</div><div class="tl__desc">B.S. December 2025, M.S. expected May 2027. <span class="ph">[[ field + institution to add ]]</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band contact" id="contact">
+  <div class="wrap">
+    <p class="eyebrow rise">Available for AI product &amp; mobile roles</p>
+    <h2 class="rise" style="margin-top:16px">Let’s talk about what you’re building.</h2>
+    <div class="row rise">
+      <a class="btn btn--primary" href="mailto:nghiavu144@gmail.com">✦ nghiavu144@gmail.com</a>
+      <a class="btn" href="#">GitHub <span class="ph">[[ url ]]</span></a>
+      <a class="btn" href="#">LinkedIn <span class="ph">[[ url ]]</span></a>
+      <a class="btn" href="#">Résumé <span class="ph">[[ pdf ]]</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Nghia Vu — AI &amp; mobile engineer</span>
+    <span class="mono">Built as an interactive mock · we iterate from here</span>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal on scroll (staggered within a group)
+  const rises = [...document.querySelectorAll('.rise')];
+  if (reduce) {
+    rises.forEach((el) => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    // hero group staggers immediately
+    const hero = rises.filter((r) => r.closest('.hero'));
+    hero.forEach((el, i) => setTimeout(() => el.classList.add('in'), 120 + i * 110));
+    rises.filter((r) => !r.closest('.hero')).forEach((el) => io.observe(el));
+  }
+
+  // ---------- Ask assistant (canned, grounded) ----------
+  const KB = [
+    { k: ['nest', 'app', 'fintech', 'project', 'built'], a: "Nest is a React Native fintech app I built and maintain end to end. Its rule: the model never owns a number. Every financial figure is computed in deterministic, testable code — the LLM only turns finished numbers into plain-language guidance. It ships in about a month, and this card is written to update fast when it does." },
+    { k: ['ai', 'llm', 'leverage', 'model', 'gpt', 'use ai'], a: "I build with pretrained models and LLM APIs — I don't train or fine-tune, and I won't claim I do. The craft is scoping the model tightly: in Nest it's a narration layer over deterministic logic, documented so nobody mistakes phrasing for computation. This assistant is the same idea — the model narrates, my real work owns the facts." },
+    { k: ['production', 'shipped', 'ship', 'experience', 'industrial', 'work', 'job', '.net', 'c#', 'azure', 'devops', 'mssql'], a: "At an industrial company I wrote and shipped production C#/.NET through Azure DevOps CI/CD against MSSQL — real systems with real uptime, not coursework. Plus Nest, built and maintained end to end. I care most about the part after the demo, where things have to hold." },
+    { k: ['stack', 'skill', 'tech', 'language', 'tools', 'framework'], a: "Front: React & React Native, TypeScript. Back: C#/.NET, Azure DevOps, MSSQL. AI: LLM APIs, scoped tightly. I'm strongest in React / React Native — that's where Nest lives." },
+    { k: ['research', 'paper', 'publish'], a: "I publish research, which keeps me honest about what these systems actually do rather than hype-driven. (Title, venue and link get added here from the real publication.)" },
+    { k: ['education', 'school', 'degree', 'grad', 'university', 'study'], a: "B.S. in December 2025 and an M.S. expected May 2027 — so I'm shipping real production work while still in school." },
+    { k: ['available', 'hire', 'hiring', 'contact', 'reach', 'role', 'email', 'talk'], a: "I'm open to AI product and mobile engineering roles, for recruiters and dev teams alike. Reach me at nghiavu144@gmail.com — or just keep asking here." },
+    { k: ['who', 'you', 'yourself', 'about', 'nghia'], a: "I'm Nghia — an AI & mobile engineer. I build AI features and mobile apps, and I obsess over the version that survives real users. The short story: a fintech app shipped end to end, production .NET at an industrial company, and published research." },
+  ];
+  const FALLBACK = "I can speak to Nest, how I use AI, my production experience, my stack, research, or availability. Try one of these:";
+  const SUGGEST = ["How does Nest use AI?", "What have you shipped in production?", "What's your stack?", "Are you available?"];
+
+  function answerFor(q) {
+    const s = q.toLowerCase();
+    let best = null, score = 0;
+    for (const item of KB) {
+      const hits = item.k.reduce((n, kw) => n + (s.includes(kw) ? 1 : 0), 0);
+      if (hits > score) { score = hits; best = item; }
+    }
+    return score > 0 ? best.a : FALLBACK;
+  }
+
+  const form = document.getElementById('ask-form');
+  const input = document.getElementById('ask-input');
+  const panel = document.getElementById('ask-answer');
+  const textEl = document.getElementById('ask-text');
+  const chipsEl = document.getElementById('chips');
+  let streamTimer = null;
+
+  function renderChips(list) {
+    chipsEl.innerHTML = '';
+    list.forEach((q) => {
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.type = 'button';
+      b.textContent = q;
+      b.addEventListener('click', () => { input.value = q; ask(q); });
+      chipsEl.appendChild(b);
+    });
+  }
+  renderChips(SUGGEST);
+
+  function stream(text) {
+    clearInterval(streamTimer);
+    textEl.innerHTML = '';
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    if (reduce) { textEl.textContent = text; return; }
+    let i = 0;
+    const body = document.createElement('span');
+    textEl.appendChild(body);
+    textEl.appendChild(caret);
+    streamTimer = setInterval(() => {
+      body.textContent = text.slice(0, i);
+      panel.scrollTop = panel.scrollHeight;
+      i++;
+      if (i > text.length) { clearInterval(streamTimer); caret.remove(); }
+    }, 14);
+  }
+
+  function ask(q) {
+    const query = (q || input.value).trim();
+    if (!query) return;
+    panel.classList.add('open');
+    textEl.innerHTML = '<span class="thinking"><span></span><span></span><span></span></span>';
+    const ans = answerFor(query);
+    const isFallback = ans === FALLBACK;
+    const delay = reduce ? 0 : 420 + Math.random() * 260;
+    setTimeout(() => {
+      stream(ans);
+      if (isFallback) renderChips(SUGGEST);
+    }, delay);
+    input.blur();
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); ask(); });
+
+  // ---------- Hero dot field (cursor-reactive, restrained) ----------
+  (function () {
+    const canvas = document.getElementById('grid-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, dots = [], mouse = { x: -999, y: -999 }, raf = 0;
+    const GAP = 46;
+    function build() {
+      const r = canvas.getBoundingClientRect();
+      w = canvas.width = r.width * devicePixelRatio;
+      h = canvas.height = r.height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      dots = [];
+      const cw = r.width, ch = r.height;
+      for (let y = GAP; y < ch; y += GAP)
+        for (let x = GAP; x < cw; x += GAP)
+          dots.push({ x, y, p: Math.random() * Math.PI * 2 });
+      mouseScale = { cw, ch };
+    }
+    let mouseScale = { cw: 0, ch: 0 };
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+      for (const d of dots) {
+        const dx = d.x - mouse.x, dy = d.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+        const near = Math.max(0, 1 - dist / 150);
+        const tw = 0.18 + 0.12 * Math.sin(t * 0.001 + d.p);
+        const a = Math.min(0.9, tw + near * 0.8);
+        const size = 1 + near * 1.6;
+        ctx.fillStyle = near > 0.05
+          ? 'rgba(231,171,94,' + a.toFixed(3) + ')'
+          : 'rgba(241,237,228,' + (a * 0.5).toFixed(3) + ')';
+        ctx.fillRect(d.x - size / 2, d.y - size / 2, size, size);
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    const hero = document.querySelector('.hero');
+    hero.addEventListener('pointermove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    });
+    hero.addEventListener('pointerleave', () => { mouse.x = -999; mouse.y = -999; });
+    build();
+    window.addEventListener('resize', () => { ctx.setTransform(1, 0, 0, 1, 0, 0); build(); });
+    if (!reduce) raf = requestAnimationFrame(draw);
+    else { // single static frame
+      for (const d of dots) { ctx.fillStyle = 'rgba(241,237,228,0.16)'; ctx.fillRect(d.x, d.y, 1.2, 1.2); }
+    }
+  })();
+</script>

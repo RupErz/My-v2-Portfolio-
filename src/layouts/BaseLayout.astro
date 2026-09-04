@@ -1,0 +1,40 @@
+---
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource/commit-mono/400.css';
+import '@fontsource/commit-mono/500.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Nghia Vu — AI & mobile engineer',
+  description = 'Nghia Vu ships AI and mobile software that survives production. A portfolio you arrive in, laid out like a workspace.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#1c1a16" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <!--
+    IMPECCABLE DIRECTION CONTRACT — surface: intro (two-frame entry)
+    THESIS: A portfolio you arrive in, laid out like a chat workspace — not a page you scroll. Refuses the scroll-forever hero and the generic AI-portfolio template.
+    OWN-WORLD: Dark warm-graphite ground (warm, not near-black, not blue-gray), warm off-white ink, ONE restrained pine/emerald accent. No glow, no neon, no bloom. Display Bricolage Grotesque; UI Hanken Grotesk; Commit Mono for data only. A crafted developer/fintech tool — cozy, gaming-adjacent, ledger-precise.
+    STORY: A recruiter crosses a warm threshold, arrives in a workspace, reads first-person messages + rich embeds, reaches Nest fast, and leaves convinced this person ships production work.
+    FIRST VIEWPORT: Frame 1 — dim room; centered "Nghia Vu", one line "I ship AI and mobile software that survives production.", a single Enter control. Crossing it assembles the two-pane workspace (rail + feed), landing in #welcome.
+    FORM: Two-frame entry; chat-client workspace (Discord-SHAPED, never skinned; no blurple, no brand assets; embeds borrow information structure, not the left bar). Brief-pinned direction; concept roll not run; seed: none.
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
+    <slot />
+  </body>
+</html>

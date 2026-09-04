@@ -1,0 +1,33 @@
+{
+  "name": "nghia-vu-portfolio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.2.1",
+    "@types/matter-js": "^0.20.2",
+    "astro": "^5.7.0",
+    "framer-motion": "^13.1.1",
+    "lucide-react": "^1.33.0",
+    "matter-js": "^0.20.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.1.1",
+    "@fontsource-variable/hanken-grotesk": "^5.1.1",
+    "@fontsource/commit-mono": "^5.1.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "css-select": "^7.0.0",
+    "css-tree": "^3.2.1",
+    "domutils": "^4.0.2",
+    "htmlparser2": "^12.0.0"
+  }
+}

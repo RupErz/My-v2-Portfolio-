@@ -1,0 +1,29 @@
+# build output
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# env & logs
+.env
+.env.*
+*.log
+npm-debug.log*
+
+# os
+.DS_Store
+
+# impeccable (ephemeral)
+# impeccable-ignore-start
+.impeccable/config.local.json
+.impeccable/hook.*.json
+.impeccable/*.png
+.impeccable/live/
+# impeccable-ignore-end
+
+# AI tooling (local only, not part of the shipped site)
+.claude/
+.impeccable/
+PRODUCT.md
+DESIGN.md
