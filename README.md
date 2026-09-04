@@ -1,40 +1,54 @@
-# Nghia Vu — portfolio
+# Nghia Vu — Portfolio
 
-A portfolio you *arrive in*, laid out like a chat workspace. Built with Astro + a React
-island. Dark warm-graphite world; content lives in one file so sections are cheap to update.
+A cinematic, monochrome personal portfolio built with **Astro** and **React 19**. It leans on `framer-motion` for motion, a canvas-rendered **ASCII portrait**, and a hidden **game mode** where a pixel cat roams across the real page.
 
-## Develop
+![Nghia Vu portfolio](./screenshots/preview.png)
+
+## ✨ features
+
+- Section-switching layout, not an endless scroll — **About · Work · Experience · Contact**
+- Interactive **ASCII portrait** on canvas, with a jelly cursor-repel effect
+- Project case pages with adaptive device frames (phone / browser / Vision Pro), a lightbox, and hover previews
+- **Sandbox game mode**: a pixel-cat platformer overlaid on the live content — the page stays scrollable and clickable
+- Static-first: React only where it needs to be interactive, so first paint stays fast
+
+## 🛠 set-up
+
+Install the dependencies
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # static output in ./dist
 ```
 
-Deploy the `dist/` output free on Cloudflare Pages, Vercel, or Netlify.
+Start the development server
 
-## Editing content
+```bash
+npm run dev
+```
 
-All copy lives in [`src/content/channels.ts`](src/content/channels.ts) — one entry per
-channel (`#welcome`, `#intro`, `#how-i-build`, `#projects`, `#experience`, `#contact`).
-The **Nest** entry is isolated in `#projects` so it's a fast update near ship (~Sept 2026).
+## 🚀 build for production
 
-## ⚠️ Replacement list — real facts to fill in (do NOT invent these)
+Generate a full static build (outputs to `dist/`)
 
-Everything wrapped in `[[ ... ]]` in `channels.ts`, plus every embed marked
-`placeholder: true`, is a real fact that wasn't confirmed at build time. Fill each from the
-source of truth:
+```bash
+npm run build
+```
 
-- **#intro / #experience / #education:** degree field + institution.
-- **#projects → Nest:** real features, screens, and any metrics — pull from the Nest repo at ship.
-- **#projects → Project 2 & 3:** titles and one-paragraph descriptions of the other real projects.
-- **#experience → role:** the industrial company's name and the start–end dates.
-- **#experience → research:** publication title, venue, and URL.
-- **#contact:** GitHub URL, LinkedIn URL, and the résumé PDF (drop it in `public/` and link it).
+## 🎨 color codes
 
-The email (`nghiavu144@gmail.com`) is wired in and real.
+| Color | Hex |
+|---|---|
+| Ink (background) | `#0a0a0b` |
+| Raised surface | `#141416` |
+| Text | `#f4f2ee` |
+| Muted | `#a2a2a6` |
+| Faint | `#63636a` |
+| Accent (mint) | `#6ff2c0` |
 
-## Design system
+## 🔤 type
 
-See [`DESIGN.md`](DESIGN.md) (written at finish from the built world) and the direction
-contract in [`src/layouts/BaseLayout.astro`](src/layouts/BaseLayout.astro).
+Schibsted Grotesk (display) · Instrument Serif (accents) · Hanken Grotesk (body) · JetBrains Mono (labels & code)
+
+---
+
+Built with a whole lot of love by **Nghia Vu**. :)
