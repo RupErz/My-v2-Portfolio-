@@ -174,7 +174,7 @@ const PROJECTS: {
     lede: 'Users generate interviews for a role, run them by speaking with a Vapi voice agent, and get scored feedback they can revisit before retaking. A solo build on Next.js 14, covering auth, generation, the live voice session, and the feedback pipeline. My first end to end LLM project.',
     pills: ['Next.js 14', 'TypeScript', 'Firebase', 'Vapi', 'Gemini', 'live'],
     links: [
-      { label: 'live demo', href: 'https://prep-bot-navy.vercel.app/' },
+      { label: 'visit site', href: 'https://prep-bot-navy.vercel.app/' },
       { label: 'GitHub', href: 'https://github.com/RupErz/PrepBot' },
     ],
     features: [
