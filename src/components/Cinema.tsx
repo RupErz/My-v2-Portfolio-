@@ -63,7 +63,7 @@ const ABOUT = [
 
 const PROJECTS: {
   title: string; tag: string; year: string; desc: string; tagline: string;
-  lede: string; pills: string[]; link: { label: string; href: string } | null;
+  lede: string; pills: string[]; links: { label: string; href: string }[];
   features: { title: string; body: string; key?: boolean }[];
   device: 'phone' | 'browser' | 'flat'; accent: string;
   cover?: string;
@@ -80,7 +80,7 @@ const PROJECTS: {
     tagline: 'The app does the math. The AI only explains it.',
     lede: 'A React Native finance app on a dual ledger engine that tracks spending against a floor and a ceiling, not one budget number. A solo build since Feb 2026, with a Gemini Coach that reads the computed data and answers in plain language. Shipping to the App Store.',
     pills: ['React Native', 'TypeScript', 'Gemini API', 'Jest', 'shipping'],
-    link: null,
+    links: [],
     features: [
       { title: 'Deterministic money math', key: true, body: 'The app computes every figure and the LLM only narrates. Coach reads the data and never produces a number, because hallucinated balances are unacceptable in finance. The UI says it out loud: Coach can be wrong, so check the numbers.' },
       { title: 'Spend forecasting', body: 'Pulse projects spend pace against a minimum and standard band, so “over your range” is a computed forecast. Backed by 49 Jest unit tests across the math layer.' },
@@ -104,7 +104,7 @@ const PROJECTS: {
     tagline: 'Upload a resume, get an ATS score and a compiled PDF back.',
     lede: 'Extracts text from PDF and DOCX uploads, scores it against a target job description with Gemini, and rebuilds an ATS ready PDF through a real LaTeX compiler. A Next.js frontend over two Python FastAPI services and Postgres, on Docker Compose. 100+ active users.',
     pills: ['Next.js 15', 'FastAPI', 'PostgreSQL', 'Docker', 'Gemini', 'live'],
-    link: { label: 'live demo', href: 'https://resume-analyzer-seven-omega.vercel.app/' },
+    links: [{ label: 'live demo', href: 'https://resume-analyzer-seven-omega.vercel.app/' }],
     features: [
       { title: 'LaTeX PDF compiler', key: true, body: 'A dedicated compiler service builds the output PDF dynamically instead of filling a fixed template, and it constrains suggestions to reframing what is already true, never inventing experience.' },
       { title: 'Scored skills match', body: 'Analysis returns a scored skills match, strong, listed but undemonstrated, or missing, against the actual job posting, plus targeted rewrites instead of generic advice.' },
@@ -127,7 +127,7 @@ const PROJECTS: {
     tagline: 'Point your camera at food, see what it cost the planet.',
     lede: 'Live camera detection of food that returns CO₂ footprint, water usage, and a sustainability score per item, with a leaderboard across users. A team of four at PennApps, where I owned the React Native frontend and helped wire pretrained detection models into the Python backend. A first computer vision project for all of us.',
     pills: ['React Native', 'Flask', 'YOLO', 'OpenCV', 'Cerebras', 'demo'],
-    link: { label: 'Devpost', href: 'https://devpost.com/software/foodprint-msad2x' },
+    links: [{ label: 'Devpost', href: 'https://devpost.com/software/foodprint-msad2x' }],
     features: [
       { title: 'Live camera detection', key: true, body: 'Bounding boxes and inline CO₂ labels render live in a React Native camera view, the hardest part across a small frontend and backend split.' },
       { title: 'Structured model output', body: 'Used pretrained open source detection models instead of training from scratch, then constrained the LLM to return strict JSON for emissions so the app consumed structured output, not prose.' },
@@ -149,7 +149,7 @@ const PROJECTS: {
     tagline: 'Learn a language by naming what’s around you, out loud.',
     lede: 'A Vision Pro app that turns photos of your surroundings into spoken practice. It detects objects in an image, writes a fill in the blank sentence, and you answer aloud in your target language while it listens and checks. Built at HackHarvard in VisionOS and Swift, a stack I had never touched, shipped in a weekend.',
     pills: ['VisionOS', 'SwiftUI', 'FastAPI', 'Gemini', 'demo'],
-    link: { label: 'Devpost', href: 'https://devpost.com/software/word-quest-7q543n' },
+    links: [{ label: 'Devpost', href: 'https://devpost.com/software/word-quest-7q543n' }],
     features: [
       { title: 'Closed practice loop', key: true, body: 'Image to object detection to a generated prompt to a spoken answer to feedback, with Gemini writing prompts and FastAPI brokering between the headset and the model.' },
       { title: 'Still image capture', body: 'Apple blocks live passthrough camera access on Vision Pro, so the design pivoted to still image capture, and the fill in the blank format made that constraint invisible to the user.' },
@@ -172,8 +172,11 @@ const PROJECTS: {
     desc: 'Voice interview practice, scored.',
     tagline: 'Practice interviews out loud with an AI that talks back and grades you.',
     lede: 'Users generate interviews for a role, run them by speaking with a Vapi voice agent, and get scored feedback they can revisit before retaking. A solo build on Next.js 14, covering auth, generation, the live voice session, and the feedback pipeline. My first end to end LLM project.',
-    pills: ['Next.js 14', 'TypeScript', 'Firebase', 'Vapi', 'Gemini', 'archived'],
-    link: { label: 'GitHub', href: 'https://github.com/RupErz/PrepBot' },
+    pills: ['Next.js 14', 'TypeScript', 'Firebase', 'Vapi', 'Gemini', 'live'],
+    links: [
+      { label: 'live demo', href: 'https://prep-bot-navy.vercel.app/' },
+      { label: 'GitHub', href: 'https://github.com/RupErz/PrepBot' },
+    ],
     features: [
       { title: 'Live voice sessions', key: true, body: 'Voice sessions with streaming transcripts. Managing Vapi call state and voice activity detection without the UI drifting out of sync was the core problem.' },
       { title: 'Generated, scored interviews', body: 'Interviews are generated from role, stack, and difficulty via Gemini, persisted to Firestore, then scored out of 100 and reviewable over time.' },
@@ -611,7 +614,7 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
         <p className="detail__lede">{p.lede}</p>
         <div className="detail__pills">
           {p.pills.map((t) => <span className="pill" key={t}>{t}</span>)}
-          {p.link && <a className="pill pill--link" href={p.link.href} target="_blank" rel="noreferrer">{p.link.label} →</a>}
+          {p.links.map((l) => <a className="pill pill--link" href={l.href} key={l.href} target="_blank" rel="noreferrer">{l.label} →</a>)}
         </div>
         <div className="feat">
           {p.features.map((f, k) => {
@@ -654,7 +657,7 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
             <div className="browser">
               <div className="browser__bar">
                 <i /><i /><i />
-                <span className="browser__addr">{p.link?.href ? new URL(p.link.href).host : 'localhost:3000'}</span>
+                <span className="browser__addr">{p.links[0]?.href ? new URL(p.links[0].href).host : 'localhost:3000'}</span>
               </div>
               <div className="browser__view">{img}</div>
             </div>
