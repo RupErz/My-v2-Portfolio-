@@ -14,30 +14,14 @@ import './cinema.css';
 
 type ScreenId = 'home' | 'about' | 'work' | 'experience' | 'contact';
 
-const ORDER: ScreenId[] = ['home', 'about', 'work', 'experience', 'contact'];
+const ORDER: ScreenId[] = ['home', 'work', 'about', 'experience', 'contact'];
 
 const DEST: { id: ScreenId; no: string; title: string; sub: string }[] = [
-  { id: 'about', no: '01', title: 'About', sub: 'who I am' },
-  { id: 'work', no: '02', title: 'Work', sub: 'what I’ve shipped' },
+  { id: 'work', no: '01', title: 'Work', sub: 'what I’ve shipped' },
+  { id: 'about', no: '02', title: 'About', sub: 'who I am' },
   { id: 'experience', no: '03', title: 'Experience', sub: 'where I’ve been' },
   { id: 'contact', no: '04', title: 'Contact', sub: 'get in touch' },
 ];
-
-const GRADS = [
-  'linear-gradient(140deg,#33333a,#151517)',
-  'linear-gradient(140deg,#2b2b30,#141416)',
-  'linear-gradient(140deg,#3a3a40,#161618)',
-  'linear-gradient(140deg,#26262b,#121214)',
-  'linear-gradient(140deg,#303036,#141416)',
-];
-
-function Photo({ i, label }: { i: number; label?: string }) {
-  return (
-    <div className="photo-ph" style={{ background: GRADS[i % GRADS.length] }}>
-      {label && <span className="lab">{label}</span>}
-    </div>
-  );
-}
 
 const ABOUT = [
   {
@@ -199,7 +183,7 @@ const EXPERIENCE: {
     company: 'Arkansas State University',
     role: 'Graduate Assistant',
     meta: 'Computer Science',
-    dates: 'Jan 2026 – Present',
+    dates: 'Jan 2026 to Present',
     bullets: [
       'Support 100+ students across Object Oriented Programming and Data Structures and Algorithms in C++.',
       'Lead weekly lab sessions and hold office hours, debugging student code and working through algorithmic concepts one on one.',
@@ -212,7 +196,7 @@ const EXPERIENCE: {
     company: 'Nucor Corporation',
     role: 'Software Development Engineering Intern',
     meta: 'Blytheville, AR',
-    dates: 'May 2024 – Aug 2024',
+    dates: 'May 2024 to Aug 2024',
     bullets: [
       'Resolved 12+ production support tickets for internal applications at North America’s largest steel producer.',
       'Root caused data integrity defects in form submissions across application logic and the SQL Server layer.',
@@ -302,7 +286,7 @@ export default function Cinema() {
       {!reduce && <CustomCursor />}
       <SideNav screen={screen} go={go} />
       <Backdrop />
-      <div className="topbar">
+      <header className="topbar">
         <button className="topbar__brand-mono" onClick={() => go('home')}>nghia vu</button>
         <div className="topbar__right">
           <nav className="topnav" aria-label="Sections">
@@ -314,7 +298,7 @@ export default function Cinema() {
             <span className="gamebtn__dot" /> game mode
           </button>
         </div>
-      </div>
+      </header>
 
       {game && (
         <GameMode
@@ -327,7 +311,7 @@ export default function Cinema() {
 
       <AnimatePresence mode="wait">
         {screen === 'home' ? (
-          <motion.section
+          <motion.main
             key="home"
             className="screen screen--home"
             initial={{ opacity: 0 }}
@@ -336,9 +320,9 @@ export default function Cinema() {
             transition={{ duration: dur, ease: [0.16, 1, 0.3, 1] }}
           >
             <HomeCenter go={go} reduce={!!reduce} />
-          </motion.section>
+          </motion.main>
         ) : (
-          <motion.section
+          <motion.main
             key={screen}
             className="screen"
             initial={{ opacity: 0, y: reduce ? 0 : 44, filter: reduce ? 'none' : 'blur(8px)' }}
@@ -359,7 +343,7 @@ export default function Cinema() {
                 {screen === 'contact' && <Contact />}
               </div>
             </div>
-          </motion.section>
+          </motion.main>
         )}
       </AnimatePresence>
     </div>
@@ -437,16 +421,6 @@ function Backdrop() {
   );
 }
 
-const BUBBLES = ['self-proclaimed AI genius', 'actually ships things', 'React Native > everything'];
-
-function BubbleArrow() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-      <path d="M3 3 Q 15 7 21 20 M21 20 L13.5 18.5 M21 20 L19 12.5" />
-    </svg>
-  );
-}
-
 function HomeCenter({ go, reduce }: { go: (id: ScreenId) => void; reduce: boolean }) {
   const stagger = (i: number) => ({
     initial: { opacity: 0, y: reduce ? 0 : 20 },
@@ -464,19 +438,21 @@ function HomeCenter({ go, reduce }: { go: (id: ScreenId) => void; reduce: boolea
         <AsciiPortrait />
       </motion.div>
       <div className="home-split__intro">
-        <motion.p className="home-split__kicker" {...stagger(0)}>a very passionate developer :)</motion.p>
+        <motion.p className="home-split__kicker" {...stagger(0)}>AI and mobile engineer</motion.p>
         <motion.h1 className="home-split__hi" {...stagger(1)}>
           hi, I’m <span className="accent">Nghia</span>.<span className="home-split__caret" aria-hidden="true">|</span>
         </motion.h1>
         <motion.p className="home-split__bio" {...stagger(2)}>
-          I’m a rising new grad developer, into finance and AI. Right now I’m building Nest, a
-          fintech mobile app, with a whole lot of love :)
+          I’m a rising new grad, into finance and AI. Right now I’m building Nest, a fintech
+          mobile app headed to the App Store, with a whole lot of love :) Resumize already has
+          100+ active users.
         </motion.p>
         <motion.div className="home-split__cta" {...stagger(3)}>
-          <a className="say-hi" href="mailto:nghiavu144@gmail.com"><Mail size={18} /> Say hi</a>
-          <button className="ghost-link" onClick={() => go('work')}>
+          <button className="say-hi" onClick={() => go('work')}>
             see the work <ArrowRight size={16} />
           </button>
+          <a className="ghost-link" href="/NghiaVu_Resume.pdf" target="_blank" rel="noreferrer"><FileText size={16} /> résumé</a>
+          <a className="ghost-link" href="mailto:nghiavu144@gmail.com"><Mail size={16} /> say hi</a>
         </motion.div>
       </div>
     </div>
@@ -689,7 +665,7 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
     <div className="detail" style={{ ['--accent' as string]: p.accent }}>
       <div className="detail__body">
         <div className="detail__head">
-          <h3 className="detail__name">{p.title}</h3>
+          <h1 className="detail__name">{p.title}</h1>
           <span className="detail__meta">{p.tag} · {p.year}</span>
         </div>
         <p className="detail__tagline">{p.tagline}</p>
@@ -842,7 +818,7 @@ function Experience() {
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h3 className="exp__role">{e.role} <span className="exp__at">@ {e.company}</span></h3>
+          <h2 className="exp__role">{e.role} <span className="exp__at">@ {e.company}</span></h2>
           <p className="exp__meta">{e.meta} · {e.dates}</p>
           <ul className="exp__bullets">
             {e.bullets.map((b, k) => <li key={k}>{b}</li>)}
