@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   motion,
   AnimatePresence,
@@ -222,14 +223,63 @@ const EXPERIENCE: {
   },
 ];
 
+/* ---------- URL state: #/work, #/work/nest ---------- */
+const slugOf = (title: string) => title.toLowerCase();
+
+function parseHash(): { screen: ScreenId; project: number | null } {
+  const [s, p] = window.location.hash.replace(/^#\/?/, '').split('/');
+  const screen = ORDER.includes(s as ScreenId) ? (s as ScreenId) : 'home';
+  const idx = screen === 'work' && p ? PROJECTS.findIndex((x) => slugOf(x.title) === p) : -1;
+  return { screen, project: idx >= 0 ? idx : null };
+}
+
+function toHash(screen: ScreenId, project: number | null) {
+  if (screen === 'home') return '';
+  if (screen === 'work' && project !== null) return `#/work/${slugOf(PROJECTS[project].title)}`;
+  return `#/${screen}`;
+}
+
 export default function Cinema() {
   const [screen, setScreen] = useState<ScreenId>('home');
+  const [project, setProject] = useState<number | null>(null);
   const reduce = useReducedMotion();
   const dur = reduce ? 0 : 0.6;
+  const baseTitle = useRef('');
 
   const [game, setGame] = useState(false);
-  const go = (id: ScreenId) => setScreen(id);
   const active = DEST.find((d) => d.id === screen);
+
+  const navigate = (id: ScreenId, p: number | null = null) => {
+    setScreen(id);
+    setProject(p);
+    const h = toHash(id, p);
+    if (h !== window.location.hash) {
+      window.history.pushState(null, '', h || window.location.pathname + window.location.search);
+    }
+  };
+  const go = (id: ScreenId) => navigate(id, null);
+  const openProject = (p: number | null) => navigate('work', p);
+
+  // restore from the URL on load, and follow Back / Forward
+  useEffect(() => {
+    const apply = () => {
+      const s = parseHash();
+      setScreen(s.screen);
+      setProject(s.project);
+    };
+    apply();
+    window.addEventListener('popstate', apply);
+    return () => window.removeEventListener('popstate', apply);
+  }, []);
+
+  // one title per view, so tabs and history entries are distinguishable
+  useEffect(() => {
+    baseTitle.current ||= document.title;
+    const parts: string[] = [];
+    if (project !== null) parts.push(PROJECTS[project].title);
+    if (screen !== 'home' && active) parts.push(active.title);
+    document.title = parts.length ? `${parts.join(', ')} | Nghia Vu` : baseTitle.current;
+  }, [screen, project, active]);
 
   useEffect(() => {
     if (game) return; // in game mode the arrows drive the bot
@@ -237,13 +287,15 @@ export default function Cinema() {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.querySelector('.lightbox')) return; // the lightbox owns the keys while open
       const idx = ORDER.indexOf(screen);
-      if (e.key === 'ArrowRight' && idx < ORDER.length - 1) { e.preventDefault(); setScreen(ORDER[idx + 1]); }
-      else if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); setScreen(ORDER[idx - 1]); }
+      if (e.key === 'ArrowRight' && idx < ORDER.length - 1) { e.preventDefault(); go(ORDER[idx + 1]); }
+      else if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); go(ORDER[idx - 1]); }
+      else if (e.key === 'Escape' && project !== null) { e.preventDefault(); openProject(null); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [screen, game]);
+  }, [screen, project, game]);
 
   return (
     <div className={`cinema ${screen === 'home' ? 'is-home' : 'is-inner'}${game ? ' game-on' : ''}`}>
@@ -255,7 +307,7 @@ export default function Cinema() {
         <div className="topbar__right">
           <nav className="topnav" aria-label="Sections">
             {DEST.map((d) => (
-              <button key={d.id} onClick={() => go(d.id)}>{d.title.toLowerCase()}</button>
+              <button key={d.id} onClick={() => go(d.id)} aria-current={screen === d.id ? 'page' : undefined}>{d.title.toLowerCase()}</button>
             ))}
           </nav>
           <button className="gamebtn" onClick={() => setGame(true)} aria-label="Enter game mode">
@@ -268,7 +320,7 @@ export default function Cinema() {
         <GameMode
           screen={screen}
           order={ORDER}
-          go={(id) => setScreen(id as ScreenId)}
+          go={(id) => go(id as ScreenId)}
           onExit={() => setGame(false)}
         />
       )}
@@ -302,7 +354,7 @@ export default function Cinema() {
                   </div>
                 )}
                 {screen === 'about' && <About reduce={!!reduce} />}
-                {screen === 'work' && <Work reduce={!!reduce} />}
+                {screen === 'work' && <Work reduce={!!reduce} project={project} setProject={openProject} />}
                 {screen === 'experience' && <Experience />}
                 {screen === 'contact' && <Contact />}
               </div>
@@ -497,14 +549,23 @@ function About({ reduce }: { reduce: boolean }) {
 }
 
 /* ---------- Work: hover list + detail ---------- */
-function Work({ reduce }: { reduce: boolean }) {
-  const [project, setProject] = useState<number | null>(null);
+function Work({ reduce, project, setProject }: { reduce: boolean; project: number | null; setProject: (p: number | null) => void }) {
   const [hover, setHover] = useState<number | null>(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const x = useSpring(mx, { stiffness: 260, damping: 30 });
   const y = useSpring(my, { stiffness: 260, damping: 30 });
   const hp = hover !== null ? PROJECTS[hover] : null;
+
+  // the cursor-following preview only makes sense with a real hovering pointer
+  const [canHover, setCanHover] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const sync = () => setCanHover(m.matches);
+    sync();
+    m.addEventListener('change', sync);
+    return () => m.removeEventListener('change', sync);
+  }, []);
 
   return (
     <AnimatePresence mode="wait">
@@ -541,7 +602,7 @@ function Work({ reduce }: { reduce: boolean }) {
               </button>
             ))}
           </div>
-          {!reduce && (
+          {!reduce && canHover && (
             <motion.div
               className="work__preview"
               style={{ x, y, top: 0, left: 0, opacity: hp ? 1 : 0, scale: hp ? 1 : 0.9 }}
@@ -596,12 +657,33 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
     ? <img src={src} alt={`${p.title} · ${cur?.cap ?? 'screenshot'}`} />
     : <div className="frame__ph">[[ {p.title} screenshot ]]</div>;
 
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // lightbox: own the keys, step through shots, trap focus, give focus back on close
   useEffect(() => {
     if (!zoom) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoom(false); };
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const many = shots.length > 1;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.preventDefault(); setZoom(false); }
+      else if (e.key === 'ArrowRight' && many) { e.preventDefault(); setI((v) => (v + 1) % shots.length); }
+      else if (e.key === 'ArrowLeft' && many) { e.preventDefault(); setI((v) => (v - 1 + shots.length) % shots.length); }
+      else if (e.key === 'Tab') {
+        const f = Array.from(document.querySelectorAll<HTMLElement>('.lightbox button'));
+        if (!f.length) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [zoom]);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      opener?.focus?.();
+    };
+  }, [zoom, shots.length]);
 
   return (
     <div className="detail" style={{ ['--accent' as string]: p.accent }}>
@@ -685,10 +767,14 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
         )}
       </div>
 
+      {typeof document !== 'undefined' && createPortal(
       <AnimatePresence>
         {zoom && cur && (
           <motion.div
             className="lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${p.title} screenshot`}
             style={{ ['--accent' as string]: p.accent }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -707,12 +793,24 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
               <img src={cur.src} alt={`${p.title} · ${cur.cap}`} />
               <figcaption>{cur.cap}</figcaption>
             </motion.figure>
-            <button className="lightbox__close" onClick={() => setZoom(false)} aria-label="Close">
+            {shots.length > 1 && (
+              <>
+                <button className="lightbox__nav lightbox__nav--prev" onClick={(e) => { e.stopPropagation(); setI((v) => (v - 1 + shots.length) % shots.length); }} aria-label="Previous screenshot">
+                  <ChevronLeft size={20} aria-hidden="true" />
+                </button>
+                <button className="lightbox__nav lightbox__nav--next" onClick={(e) => { e.stopPropagation(); setI((v) => (v + 1) % shots.length); }} aria-label="Next screenshot">
+                  <ChevronRight size={20} aria-hidden="true" />
+                </button>
+              </>
+            )}
+            <button ref={closeRef} className="lightbox__close" onClick={() => setZoom(false)} aria-label="Close">
               <X size={18} />
             </button>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body,
+      )}
     </div>
   );
 }
