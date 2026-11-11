@@ -13,8 +13,8 @@ const photo = (name: string, alt: string, caption: string): Photo => ({
 });
 
 const STORIES: Story[] = [
-  { id: 'research', title: 'A different kind of debugging', period: 'Present',
-    caption: 'The robot I’m working with for my Graduate Assistant research.',
+  { id: 'research', title: 'A different kind of debugging', period: 'Sep 2026 to Present', dateTime: '2026-09',
+    caption: 'The robot I’m working with as a Research Assistant.',
     photos: [photo('robot', 'The research robot in the lab', 'My research companion.')] },
   { id: 'nest', title: 'Nest', period: 'In progress', caption: 'A peek at my upcoming project', project: true,
     photos: [{ src: '/shots/nest-01-capture-tab.png', alt: 'Nest finance app Capture screen', caption: 'A peek at my upcoming project' }] },

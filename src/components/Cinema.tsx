@@ -26,7 +26,7 @@ const DEST: { id: ScreenId; no: string; title: string; sub: string }[] = [
 
 const PROJECTS: {
   title: string; tag: string; year: string; desc: string; tagline: string;
-  lede: string; pills: string[]; links: { label: string; href: string }[];
+  lede: string; contribution: string; context: string; pills: string[]; links: { label: string; href: string }[];
   features: { title: string; body: string; key?: boolean }[];
   device: 'phone' | 'browser' | 'flat'; accent: string;
   cover?: string; status?: string;
@@ -41,14 +41,16 @@ const PROJECTS: {
     accent: '#5FD3A0',
     cover: '/covers/nest.png',
     desc: 'The app does the math, the AI just explains it.',
-    tagline: 'The app does the math. The AI only explains it.',
-    lede: 'A React Native finance app on a dual ledger engine that tracks spending against a floor and a ceiling, not one budget number. A solo build since Feb 2026, with a Gemini Coach that reads the computed data and answers in plain language. Shipping to the App Store.',
-    pills: ['React Native', 'TypeScript', 'Gemini API', 'Jest', 'shipping'],
+    tagline: "Know where your money goes.",
+    lede: "Track expenses, sort spending, and see how your month is shaping up. An AI coach explains the numbers in plain language.",
+    contribution: "Solo developer · Mobile app and AI integration",
+    context: "Building since Feb 2026 · In development",
+    pills: ["React Native", "TypeScript", "Gemini API", "Jest"],
     links: [],
     features: [
-      { title: 'Deterministic money math', key: true, body: 'The app computes every figure and the LLM only narrates. Coach reads the data and never produces a number, because hallucinated balances are unacceptable in finance. The UI says it out loud: Coach can be wrong, so check the numbers.' },
-      { title: 'Spend forecasting', body: 'Pulse projects spend pace against a minimum and standard band, so “over your range” is a computed forecast. Backed by 49 Jest unit tests across the math layer.' },
-      { title: 'Swipe triage', body: 'Categorization becomes a swipe deck, Wasted / Nice / Must, because the real failure of budgeting apps is people never sorting their expenses.' },
+      { title: "Keep the money math in code", key: true, body: "Every figure is computed by the app. Gemini reads that data to explain it, with a reminder to check the numbers." },
+      { title: "Forecast against a spending range", body: "Pulse projects month-end spending against minimum and standard bands. The math layer is covered by 49 Jest unit tests." },
+      { title: "Make categorization a swipe", body: "Sort expenses into Wasted, Nice, or Must with a swipe deck, making routine categorization easier to keep up with." },
     ],
     shots: [
       { src: '/shots/nest-01-capture-tab.png', cap: 'Capture · quick entry with a logging streak and a sort deadline' },
@@ -65,14 +67,16 @@ const PROJECTS: {
     accent: '#6EA8FF',
     cover: '/covers/resumize.png',
     desc: 'ATS resume scoring with a LaTeX compiled rewrite.',
-    tagline: 'Upload a resume, get an ATS score and a compiled PDF back.',
-    lede: 'Extracts text from PDF and DOCX uploads, scores it against a target job description with Gemini, and rebuilds an ATS ready PDF through a real LaTeX compiler. A Next.js frontend over two Python FastAPI services and Postgres, on Docker Compose. 100+ active users.',
-    pills: ['Next.js 15', 'FastAPI', 'PostgreSQL', 'Docker', 'Gemini', 'live'],
+    tagline: "A clearer resume for your next application.",
+    lede: "Compare a PDF or DOCX resume with a job description, identify skills gaps, and download a rewritten PDF.",
+    contribution: "Team lead · AI integration and UI design",
+    context: "Senior capstone · 100+ active users",
+    pills: ["Next.js 15", "FastAPI", "PostgreSQL", "Docker", "Gemini"],
     links: [{ label: 'live demo', href: 'https://resume-analyzer-seven-omega.vercel.app/' }],
     features: [
-      { title: 'LaTeX PDF compiler', key: true, body: 'A dedicated compiler service builds the output PDF dynamically instead of filling a fixed template, and it constrains suggestions to reframing what is already true, never inventing experience.' },
-      { title: 'Scored skills match', body: 'Analysis returns a scored skills match, strong, listed but undemonstrated, or missing, against the actual job posting, plus targeted rewrites instead of generic advice.' },
-      { title: 'Isolated document pipeline', body: 'Document processing runs as its own FastAPI service, so MarkItDown handles messy PDF extraction and mammoth covers DOCX through unified extract and analyze endpoints.' },
+      { title: "Compile a real PDF", key: true, body: "A dedicated LaTeX service builds the rewritten document. Suggestions reframe existing experience without inventing new claims." },
+      { title: "Match the actual job description", body: "Skills are marked strong, listed but undemonstrated, or missing. Targeted rewrites connect the resume to the specific posting." },
+      { title: "Separate document processing", body: "Two FastAPI services handle document analysis and PDF compilation, alongside Postgres in Docker Compose. MarkItDown extracts PDF text and mammoth handles DOCX." },
     ],
     shots: [
       { src: '/shots/resumize-03-analysis-report.png', cap: 'Analysis · ATS score, skills match, and targeted rewrites against a real posting' },
@@ -88,14 +92,16 @@ const PROJECTS: {
     accent: '#9BD64A',
     cover: '/covers/foodprint.png',
     desc: 'Live food detection with a carbon footprint.',
-    tagline: 'Point your camera at food, see what it cost the planet.',
-    lede: 'Live camera detection of food that returns CO₂ footprint, water usage, and a sustainability score per item, with a leaderboard across users. A team of four at PennApps, where I owned the React Native frontend and helped wire pretrained detection models into the Python backend. A first computer vision project for all of us.',
-    pills: ['React Native', 'Flask', 'YOLO', 'OpenCV', 'Cerebras', 'demo'],
+    tagline: "See the footprint of your food.",
+    lede: "Scan food with your camera to see estimated carbon emissions, water usage, and a sustainability score. Compare your results on a shared leaderboard.",
+    contribution: "React Native frontend · Backend integration",
+    context: "Team of four · Built at PennApps",
+    pills: ["React Native", "Flask", "YOLO", "OpenCV", "Cerebras"],
     links: [{ label: 'Devpost', href: 'https://devpost.com/software/foodprint-msad2x' }],
     features: [
-      { title: 'Live camera detection', key: true, body: 'Bounding boxes and inline CO₂ labels render live in a React Native camera view, the hardest part across a small frontend and backend split.' },
-      { title: 'Structured model output', body: 'Used pretrained open source detection models instead of training from scratch, then constrained the LLM to return strict JSON for emissions so the app consumed structured output, not prose.' },
-      { title: 'Real device testing', body: 'Hackathon wifi blocked device debugging, so we tested on real phones over personal hotspots.' },
+      { title: "Connect live detection to the camera view", key: true, body: "Render bounding boxes and carbon labels in React Native while detection runs in the Python backend. This was our first computer vision project." },
+      { title: "Make model output predictable", body: "Use pretrained detection models and require strict JSON from the LLM, so the app can read emissions data consistently." },
+      { title: "Test on real phones", body: "Hackathon wifi blocked device debugging. Personal hotspots let us connect the app to the backend and test on our phones." },
     ],
     shots: [
       { src: '/shots/foodprint-01-live-detection.webp', cap: 'Live detection · bounding box and inline CO₂ per kg label' },
@@ -110,14 +116,16 @@ const PROJECTS: {
     accent: '#B98CFF',
     cover: '/covers/lingualens.png',
     desc: 'Language practice from what is around you.',
-    tagline: 'Learn a language by naming what’s around you, out loud.',
-    lede: 'A Vision Pro app that turns photos of your surroundings into spoken practice. It detects objects in an image, writes a fill in the blank sentence, and you answer aloud in your target language while it listens and checks. Built at HackHarvard in VisionOS and Swift, a stack I had never touched, shipped in a weekend.',
-    pills: ['VisionOS', 'SwiftUI', 'FastAPI', 'Gemini', 'demo'],
+    tagline: "Practice a language with what’s around you.",
+    lede: "Turn a photo of your surroundings into a speaking exercise on Apple Vision Pro, with generated prompts and feedback on your answers.",
+    contribution: "Built with a team · First VisionOS and Swift project",
+    context: "Weekend prototype · Built at HackHarvard",
+    pills: ["VisionOS", "SwiftUI", "FastAPI", "Gemini"],
     links: [{ label: 'Devpost', href: 'https://devpost.com/software/word-quest-7q543n' }],
     features: [
-      { title: 'Closed practice loop', key: true, body: 'Image to object detection to a generated prompt to a spoken answer to feedback, with Gemini writing prompts and FastAPI brokering between the headset and the model.' },
-      { title: 'Still image capture', body: 'Apple blocks live passthrough camera access on Vision Pro, so the design pivoted to still image capture, and the fill in the blank format made that constraint invisible to the user.' },
-      { title: 'Ruthless scoping', body: 'Scoped hard against Vision Pro’s limits and a tight token budget, cutting eye tracking and live view to protect the core loop.' },
+      { title: "Complete the practice loop", key: true, body: "Detect an object, generate a sentence with a blank, listen to the spoken answer, and give feedback. FastAPI connects the headset with Gemini." },
+      { title: "Build around still photos", body: "Use still images when live passthrough camera access is unavailable. Detected objects become the basis for each speaking prompt." },
+      { title: "Protect the core experience", body: "Cut eye tracking and live view to focus on the speaking loop, working within the headset’s constraints, a tight token budget, and a weekend deadline." },
     ],
     shots: [
       { src: '/shots/lingualens-03-speaking-prompt.webp', cap: 'Speaking prompt · fill in the blank, live mic, transcribed answer' },
@@ -134,17 +142,19 @@ const PROJECTS: {
     accent: '#F4B24C',
     cover: '/covers/prepbot.png',
     desc: 'Voice interview practice, scored.',
-    tagline: 'Practice interviews out loud with an AI that talks back and grades you.',
-    lede: 'Users generate interviews for a role, run them by speaking with a Vapi voice agent, and get scored feedback they can revisit before retaking. A solo build on Next.js 14, covering auth, generation, the live voice session, and the feedback pipeline. My first end to end LLM project.',
-    pills: ['Next.js 14', 'TypeScript', 'Firebase', 'Vapi', 'Gemini', 'live'],
+    tagline: "Interview practice, out loud.",
+    lede: "Practice a role-specific interview with a voice agent, then review your transcript and scored feedback before trying again.",
+    contribution: "Solo developer · Auth, voice sessions and feedback",
+    context: "First end to end LLM project",
+    pills: ["Next.js 14", "TypeScript", "Firebase", "Vapi", "Gemini"],
     links: [
       { label: 'visit site', href: 'https://prep-bot-navy.vercel.app/' },
       { label: 'GitHub', href: 'https://github.com/RupErz/PrepBot' },
     ],
     features: [
-      { title: 'Live voice sessions', key: true, body: 'Voice sessions with streaming transcripts. Managing Vapi call state and voice activity detection without the UI drifting out of sync was the core problem.' },
-      { title: 'Generated, scored interviews', body: 'Interviews are generated from role, stack, and difficulty via Gemini, persisted to Firestore, then scored out of 100 and reviewable over time.' },
-      { title: 'Server side auth', body: 'Server side auth with httpOnly session cookies and protected routes, not client only Firebase checks.' },
+      { title: "Keep the voice session in sync", key: true, body: "Manage Vapi call state, voice activity, and streaming transcripts together so the interface follows the conversation." },
+      { title: "Make practice reviewable", body: "Generate interviews by role, stack, and difficulty with Gemini. Save interviews and scored feedback in Firestore so users can revisit their practice." },
+      { title: "Protect access on the server", body: "Use server-side authentication with httpOnly session cookies and protected routes, rather than relying on client-side Firebase checks." },
     ],
     shots: [
       { src: '/shots/prepbot-01-interview-generation.png', cap: 'Generation · voice agent and candidate, call ready to start' },
@@ -155,8 +165,28 @@ const PROJECTS: {
 
 const EXPERIENCE: {
   tab: string; company: string; role: string; meta: string; dates: string;
-  bullets: string[]; stack: string[];
+  bullets: string[]; stack: string[]; summary?: string; description?: string[];
 }[] = [
+  {
+    tab: 'Research',
+    company: 'Arkansas State University',
+    role: 'Research Assistant',
+    meta: 'Autonomous robotics',
+    dates: 'Sep 2026 to Present',
+    summary: 'Developing SLAM mapping for an autonomous delivery robot that combines real-time object detection with lidar, under a professor specializing in machine learning and security.',
+    description: [
+      'I work on a Hiwonder JetAcker robot running on an NVIDIA Jetson Orin Nano, as part of a research project focused on the security and reliability of autonomous delivery robots. My current work is developing a feature that enables SLAM mapping by combining two very different sensors: a YOLOv5s object detection model, accelerated with TensorRT, reading from an Astra Pro Plus depth camera, and a SLAMTEC lidar that measures where things are in space.',
+      'I build and adapt Python ROS 2 Humble nodes that bring this data together, using slam_toolbox for mapping, Nav2 for navigation, and RViz to visualize what the robot sees. All development happens remotely on the robot over SSH, tracked in Git. Alongside the mapping work, I’m helping investigate security weaknesses in the robot’s perception models, the part of the system that decides what’s in front of it.',
+      'It’s the most hands-on engineering I’ve done. Code that looks right on screen still has to work on real hardware, in a real room.',
+    ],
+    bullets: [
+      'Developing a SLAM mapping feature that combines TensorRT YOLOv5s detection with lidar data.',
+      'Building and adapting Python ROS 2 nodes on an NVIDIA Jetson Orin Nano.',
+      'Mapping and navigation with slam_toolbox, Nav2, and RViz.',
+      'Investigating security weaknesses in the robot’s perception models.',
+    ],
+    stack: ['Python', 'ROS 2 Humble', 'rclpy', 'YOLOv5s', 'TensorRT', 'NVIDIA Jetson Orin Nano', 'SLAMTEC Lidar', 'Astra Pro Plus', 'slam_toolbox', 'Nav2', 'RViz', 'Linux', 'SSH', 'Git'],
+  },
   {
     tab: 'Arkansas State',
     company: 'Arkansas State University',
@@ -582,16 +612,17 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
         </div>
         <p className="detail__tagline">{p.tagline}</p>
         <p className="detail__lede">{p.lede}</p>
-        <div className="detail__pills">
-          {p.pills.map((t) => <span className="pill" key={t}>{t}</span>)}
-          {p.links.map((l) => <a className="pill pill--link" href={l.href} key={l.href} target="_blank" rel="noreferrer">{l.label} →</a>)}
-        </div>
+        <dl className="detail__contribution">
+          <div><dt>My part</dt><dd>{p.contribution}</dd></div>
+          <div><dt>Context</dt><dd>{p.context}</dd></div>
+        </dl>
         <div className="feat">
+          <h2 className="detail__section-title">Key decisions</h2>
           {p.features.map((f, k) => {
             const isOpen = open.has(k);
             return (
               <div className={`feat__row${f.key ? ' feat__row--key' : ''}${isOpen ? ' is-open' : ''}`} key={k}>
-                <button className="feat__head" onClick={() => toggle(k)} aria-expanded={isOpen}>
+                <button className="feat__head" onClick={() => toggle(k)} aria-expanded={isOpen} aria-controls={`${slugOf(p.title)}-decision-${k}`}>
                   <span className="feat__title">
                     {f.key && <i className="feat__mark" aria-hidden="true" />}
                     {f.title}
@@ -602,6 +633,7 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
                   {isOpen && (
                     <motion.div
                       className="feat__reveal"
+                      id={`${slugOf(p.title)}-decision-${k}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -614,6 +646,15 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
               </div>
             );
           })}
+        </div>
+        <div className="detail__tools">
+          <h2 className="detail__section-title">Built with</h2>
+          <div className="detail__pills">
+            {p.pills.map((t) => <span className="pill" key={t}>{t}</span>)}
+          </div>
+          {p.links.length > 0 && <div className="detail__links">
+            {p.links.map((l) => <a href={l.href} key={l.href} target="_blank" rel="noreferrer">{l.label}<ArrowUpRight size={16} aria-hidden="true" /></a>)}
+          </div>}
         </div>
       </div>
       <div className="detail__device">
@@ -705,9 +746,9 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
 
 function Experience() {
   return (
-    <ol className="xp">
+    <ol className="xp" aria-label="Experience, latest start date first">
       {EXPERIENCE.map((e) => (
-        <li className="xp__row" key={e.company}>
+        <li className="xp__row" key={`${e.company}-${e.role}`}>
           <div className="xp__when">
             <span className="xp__dates">{e.dates}</span>
             <span className="xp__place">{e.meta}</span>
@@ -715,9 +756,18 @@ function Experience() {
           <div className="xp__body">
             <h2 className="xp__role">{e.role}</h2>
             <p className="xp__co">{e.company}</p>
+            {e.summary && <p className="xp__summary">{e.summary}</p>}
             <ul className="xp__bullets">
               {e.bullets.map((b, k) => <li key={k}>{b}</li>)}
             </ul>
+            {e.description && (
+              <details className="xp__details">
+                <summary>More about the research<ChevronDown size={16} aria-hidden="true" /></summary>
+                <div className="xp__description">
+                  {e.description.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+              </details>
+            )}
             <div className="xp__stack">
               {e.stack.map((t) => <span className="pill" key={t}>{t}</span>)}
             </div>
