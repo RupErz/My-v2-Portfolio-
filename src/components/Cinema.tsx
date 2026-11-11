@@ -10,6 +10,7 @@ import {
 import { ArrowRight, ArrowLeft, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Mail, FileText, Maximize2, X } from 'lucide-react';
 import AsciiPortrait from './AsciiPortrait';
 import GameMode from './GameMode';
+import PhotoJournal from './PhotoJournal';
 import './cinema.css';
 
 type ScreenId = 'home' | 'about' | 'work' | 'experience' | 'contact';
@@ -23,39 +24,17 @@ const DEST: { id: ScreenId; no: string; title: string; sub: string }[] = [
   { id: 'contact', no: '04', title: 'Contact', sub: 'get in touch' },
 ];
 
-const ABOUT = [
-  {
-    src: '/about-me.jpeg',
-    cap: 'off the clock',
-    text: 'Outside of code I love to travel and touch some grass. This one’s from a recent trip to Bà Nà Hills in Da Nang, Vietnam. It was unreal, you should go.',
-  },
-  {
-    src: '/about-building.jpeg',
-    cap: 'an average day',
-    text: 'A pretty average day for me. Heads down on Nest, my fintech app, with some favourite music going in the background.',
-  },
-  {
-    src: '/about-grad.jpeg',
-    cap: 'the milestone',
-    text: 'My first graduation. A little scared of what comes next, but proud I made it this far.',
-  },
-  {
-    src: '/about-family.jpeg',
-    cap: 'the people who got me here',
-    text: 'The ones who catch me every time I fall and back every decision I make. I love my family.',
-  },
-];
-
 const PROJECTS: {
   title: string; tag: string; year: string; desc: string; tagline: string;
   lede: string; pills: string[]; links: { label: string; href: string }[];
   features: { title: string; body: string; key?: boolean }[];
   device: 'phone' | 'browser' | 'flat'; accent: string;
-  cover?: string;
+  cover?: string; status?: string;
   shots: { src: string; cap: string }[];
 }[] = [
   {
     title: 'Nest',
+    status: 'Ongoing',
     tag: 'Mobile app',
     year: '2026',
     device: 'phone',
@@ -282,7 +261,7 @@ export default function Cinema() {
   }, [screen, project, game]);
 
   return (
-    <div className={`cinema ${screen === 'home' ? 'is-home' : 'is-inner'}${game ? ' game-on' : ''}`}>
+    <div className={`cinema ${screen === 'home' ? 'is-home' : 'is-inner'}${screen === 'about' ? ' cinema--journal' : ''}${game ? ' game-on' : ''}`}>
       {!reduce && <CustomCursor />}
       <SideNav screen={screen} go={go} />
       <Backdrop />
@@ -331,13 +310,13 @@ export default function Cinema() {
             transition={{ duration: dur, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="screen__scroll">
-              <div className="stage">
+              <div className={`stage${screen === 'about' ? ' stage--about' : ''}`}>
                 {screen !== 'work' && (
                   <div className="screen__head">
                     <h1 className="screen__title">{active?.title}</h1>
                   </div>
                 )}
-                {screen === 'about' && <About reduce={!!reduce} />}
+                {screen === 'about' && <PhotoJournal onOpenNest={() => openProject(0)} />}
                 {screen === 'work' && <Work reduce={!!reduce} project={project} setProject={openProject} />}
                 {screen === 'experience' && <Experience />}
                 {screen === 'contact' && <Contact />}
@@ -406,7 +385,13 @@ function CustomCursor() {
 
   return (
     <>
-      <motion.div className={`cursor-ring${active ? ' is-active' : ''}`} aria-hidden="true" style={{ x: rx, y: ry, opacity: visible ? 1 : 0 }} />
+      <motion.div
+        className={`cursor-ring${active ? ' is-active' : ''}`}
+        aria-hidden="true"
+        style={{ x: rx, y: ry, opacity: visible ? 1 : 0 }}
+        animate={{ scale: active ? 1.59 : 1 }}
+        transition={{ scale: { duration: 0.22 } }}
+      />
       <motion.div className="cursor-dot" aria-hidden="true" style={{ x, y, opacity: visible ? 1 : 0 }} />
     </>
   );
@@ -444,56 +429,6 @@ function HomeCenter({ go }: { go: (id: ScreenId) => void }) {
           </button>
           <a className="ghost-link" href="/NghiaVu_Resume.pdf" target="_blank" rel="noreferrer"><FileText size={16} /> résumé</a>
           <a className="ghost-link" href="mailto:nghiavu144@gmail.com"><Mail size={16} /> say hi</a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- About: card stack ---------- */
-function About({ reduce }: { reduce: boolean }) {
-  const [i, setI] = useState(0);
-  const p = ABOUT[i];
-  const next = () => setI((v) => (v + 1) % ABOUT.length);
-  const prev = () => setI((v) => (v - 1 + ABOUT.length) % ABOUT.length);
-
-  return (
-    <div className="about">
-      <div className="about__photo">
-        <div className="about__frame">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={i}
-              src={p.src}
-              alt={p.cap}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduce ? 0 : 0.4, ease: 'easeInOut' }}
-            />
-          </AnimatePresence>
-        </div>
-        <div className="about__dots" aria-hidden="true">
-          {ABOUT.map((_, k) => <i key={k} className={k === i ? 'on' : ''} />)}
-        </div>
-      </div>
-      <div className="about__story">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: reduce ? 0 : 12, filter: reduce ? 'none' : 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: reduce ? 0 : -8 }}
-            transition={{ duration: reduce ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <p className="about__eyebrow">{p.cap}</p>
-            <p className="about__yap">{p.text}</p>
-          </motion.div>
-        </AnimatePresence>
-        <div className="about__nav">
-          <button className="round-btn" onClick={prev} aria-label="Previous"><ArrowLeft /></button>
-          <span className="about__count num">{i + 1} / {ABOUT.length}</span>
-          <button className="round-btn" onClick={next} aria-label="Next"><ArrowRight /></button>
         </div>
       </div>
     </div>
@@ -547,6 +482,7 @@ function Work({ reduce, project, setProject }: { reduce: boolean; project: numbe
                   <div className="work__row-main">
                     <span className="work__row-title">{p.title}</span>
                     <span className="work__row-tag">{p.tag}</span>
+                    {p.status && <span className="work__status">{p.status}</span>}
                   </div>
                   <div className="work__row-desc">{p.desc}</div>
                 </div>
