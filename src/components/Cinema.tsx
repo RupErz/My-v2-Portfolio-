@@ -7,7 +7,7 @@ import {
   useSpring,
   useReducedMotion,
 } from 'framer-motion';
-import { ArrowRight, ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Mail, FileText, Maximize2, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Mail, FileText, Maximize2, X } from 'lucide-react';
 import AsciiPortrait from './AsciiPortrait';
 import GameMode from './GameMode';
 import './cinema.css';
@@ -119,7 +119,7 @@ const PROJECTS: {
       { title: 'Real device testing', body: 'Hackathon wifi blocked device debugging, so we tested on real phones over personal hotspots.' },
     ],
     shots: [
-      { src: '/shots/foodprint-01-live-detection.png', cap: 'Live detection · bounding box and inline CO₂ per kg label' },
+      { src: '/shots/foodprint-01-live-detection.webp', cap: 'Live detection · bounding box and inline CO₂ per kg label' },
       { src: '/shots/foodprint-02-scan-results.png', cap: 'Results · CO₂ footprint, water usage, sustainability score' },
     ],
   },
@@ -141,10 +141,10 @@ const PROJECTS: {
       { title: 'Ruthless scoping', body: 'Scoped hard against Vision Pro’s limits and a tight token budget, cutting eye tracking and live view to protect the core loop.' },
     ],
     shots: [
-      { src: '/shots/lingualens-03-speaking-prompt.png', cap: 'Speaking prompt · fill in the blank, live mic, transcribed answer' },
-      { src: '/shots/lingualens-04-object-prompt.png', cap: 'Prompt generated from a detected object in the scene' },
-      { src: '/shots/lingualens-02-language-setup.png', cap: 'Setup · native and target language, plus difficulty' },
-      { src: '/shots/lingualens-01-entry.png', cap: 'Entry screen' },
+      { src: '/shots/lingualens-03-speaking-prompt.webp', cap: 'Speaking prompt · fill in the blank, live mic, transcribed answer' },
+      { src: '/shots/lingualens-04-object-prompt.webp', cap: 'Prompt generated from a detected object in the scene' },
+      { src: '/shots/lingualens-02-language-setup.webp', cap: 'Setup · native and target language, plus difficulty' },
+      { src: '/shots/lingualens-01-entry.webp', cap: 'Entry screen' },
     ],
   },
   {
@@ -314,12 +314,12 @@ export default function Cinema() {
           <motion.main
             key="home"
             className="screen screen--home"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.03, filter: 'blur(6px)' }}
             transition={{ duration: dur, ease: [0.16, 1, 0.3, 1] }}
           >
-            <HomeCenter go={go} reduce={!!reduce} />
+            <HomeCenter go={go} />
           </motion.main>
         ) : (
           <motion.main
@@ -421,39 +421,30 @@ function Backdrop() {
   );
 }
 
-function HomeCenter({ go, reduce }: { go: (id: ScreenId) => void; reduce: boolean }) {
-  const stagger = (i: number) => ({
-    initial: { opacity: 0, y: reduce ? 0 : 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.1 + i * 0.09, ease: [0.16, 1, 0.3, 1] as const },
-  });
+function HomeCenter({ go }: { go: (id: ScreenId) => void }) {
+  // the intro is CSS, so the hero is already visible in the server HTML
   return (
     <div className="home-split">
-      <motion.div
-        className="home-split__portrait"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: reduce ? 0 : 1.1, delay: reduce ? 0 : 0.15 }}
-      >
+      <div className="home-split__portrait rise" style={{ ['--i' as string]: 0 } as React.CSSProperties}>
         <AsciiPortrait />
-      </motion.div>
+      </div>
       <div className="home-split__intro">
-        <motion.p className="home-split__kicker" {...stagger(0)}>AI and mobile engineer</motion.p>
-        <motion.h1 className="home-split__hi" {...stagger(1)}>
+        <p className="home-split__kicker rise" style={{ ['--i' as string]: 1 } as React.CSSProperties}>AI and mobile engineer</p>
+        <h1 className="home-split__hi rise" style={{ ['--i' as string]: 2 } as React.CSSProperties}>
           hi, I’m <span className="accent">Nghia</span>.<span className="home-split__caret" aria-hidden="true">|</span>
-        </motion.h1>
-        <motion.p className="home-split__bio" {...stagger(2)}>
+        </h1>
+        <p className="home-split__bio rise" style={{ ['--i' as string]: 3 } as React.CSSProperties}>
           I’m a rising new grad, into finance and AI. Right now I’m building Nest, a fintech
           mobile app headed to the App Store, with a whole lot of love :) Resumize already has
           100+ active users.
-        </motion.p>
-        <motion.div className="home-split__cta" {...stagger(3)}>
+        </p>
+        <div className="home-split__cta rise" style={{ ['--i' as string]: 4 } as React.CSSProperties}>
           <button className="say-hi" onClick={() => go('work')}>
             see the work <ArrowRight size={16} />
           </button>
           <a className="ghost-link" href="/NghiaVu_Resume.pdf" target="_blank" rel="noreferrer"><FileText size={16} /> résumé</a>
           <a className="ghost-link" href="mailto:nghiavu144@gmail.com"><Mail size={16} /> say hi</a>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -462,27 +453,12 @@ function HomeCenter({ go, reduce }: { go: (id: ScreenId) => void; reduce: boolea
 /* ---------- About: card stack ---------- */
 function About({ reduce }: { reduce: boolean }) {
   const [i, setI] = useState(0);
-  const rootRef = useRef<HTMLDivElement>(null);
   const p = ABOUT[i];
   const next = () => setI((v) => (v + 1) % ABOUT.length);
   const prev = () => setI((v) => (v - 1 + ABOUT.length) % ABOUT.length);
 
-  // when About opens (click / reload / first move here), ease it into view
-  useEffect(() => {
-    const el = rootRef.current;
-    const sc = el?.closest('.screen__scroll') as HTMLElement | null;
-    if (!el || !sc) return;
-    const t = setTimeout(() => {
-      const er = el.getBoundingClientRect();
-      const cr = sc.getBoundingClientRect();
-      const pad = Math.max(24, (sc.clientHeight - el.offsetHeight) / 2);
-      sc.scrollBy({ top: er.top - cr.top - pad, behavior: reduce ? 'auto' : 'smooth' });
-    }, 120);
-    return () => clearTimeout(t);
-  }, [reduce]);
-
   return (
-    <div className="about" ref={rootRef}>
+    <div className="about">
       <div className="about__photo">
         <div className="about__frame">
           <AnimatePresence mode="wait">
@@ -792,43 +768,27 @@ function Detail({ p }: { p: (typeof PROJECTS)[number] }) {
 }
 
 function Experience() {
-  const [i, setI] = useState(0);
-  const e = EXPERIENCE[i];
   return (
-    <div className="exp">
-      <div className="exp__rail" role="tablist" aria-label="Roles">
-        {EXPERIENCE.map((x, k) => (
-          <button
-            key={k}
-            className={`exp__tab${k === i ? ' on' : ''}`}
-            onClick={() => setI(k)}
-            role="tab"
-            aria-selected={k === i}
-          >
-            {x.tab}
-          </button>
-        ))}
-      </div>
-      <AnimatePresence mode="wait">
-        <motion.div
-          className="exp__detail"
-          key={i}
-          initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <h2 className="exp__role">{e.role} <span className="exp__at">@ {e.company}</span></h2>
-          <p className="exp__meta">{e.meta} · {e.dates}</p>
-          <ul className="exp__bullets">
-            {e.bullets.map((b, k) => <li key={k}>{b}</li>)}
-          </ul>
-          <div className="exp__stack">
-            {e.stack.map((s) => <span className="pill" key={s}>{s}</span>)}
+    <ol className="xp">
+      {EXPERIENCE.map((e) => (
+        <li className="xp__row" key={e.company}>
+          <div className="xp__when">
+            <span className="xp__dates">{e.dates}</span>
+            <span className="xp__place">{e.meta}</span>
           </div>
-        </motion.div>
-      </AnimatePresence>
-    </div>
+          <div className="xp__body">
+            <h2 className="xp__role">{e.role}</h2>
+            <p className="xp__co">{e.company}</p>
+            <ul className="xp__bullets">
+              {e.bullets.map((b, k) => <li key={k}>{b}</li>)}
+            </ul>
+            <div className="xp__stack">
+              {e.stack.map((t) => <span className="pill" key={t}>{t}</span>)}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -848,15 +808,28 @@ function LinkedinIcon() {
 }
 
 function Contact() {
+  const rows = [
+    { label: 'GitHub', hint: 'github.com/RupErz', href: 'https://github.com/RupErz', icon: <GithubIcon /> },
+    { label: 'LinkedIn', hint: 'linkedin.com/in/minhnghia-vu', href: 'https://www.linkedin.com/in/minhnghia-vu-784678242/', icon: <LinkedinIcon /> },
+    { label: 'Résumé', hint: 'PDF', href: '/NghiaVu_Resume.pdf', icon: <FileText size={18} /> },
+  ];
   return (
-    <div>
+    <div className="contact">
       <p className="contact-big">Let’s talk about <span className="contact-serif">what you’re building.</span></p>
-      <div className="contact-row">
-        <a className="cbtn cbtn--primary" href="mailto:nghiavu144@gmail.com"><Mail /> nghiavu144@gmail.com</a>
-        <a className="cbtn" href="https://github.com/RupErz" target="_blank" rel="noreferrer"><GithubIcon /> GitHub</a>
-        <a className="cbtn" href="https://www.linkedin.com/in/minhnghia-vu-784678242/" target="_blank" rel="noreferrer"><LinkedinIcon /> LinkedIn</a>
-        <a className="cbtn" href="/NghiaVu_Resume.pdf" target="_blank" rel="noreferrer"><FileText /> Résumé</a>
-      </div>
+      <a className="contact-mail" href="mailto:nghiavu144@gmail.com">
+        nghiavu144@gmail.com <ArrowUpRight aria-hidden="true" />
+      </a>
+      <ul className="contact-list">
+        {rows.map((r) => (
+          <li key={r.label}>
+            <a className="contact-link" href={r.href} target="_blank" rel="noreferrer">
+              <span className="contact-link__label">{r.icon}{r.label}</span>
+              <span className="contact-link__hint">{r.hint}</span>
+              <ArrowUpRight className="contact-link__go" aria-hidden="true" />
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
